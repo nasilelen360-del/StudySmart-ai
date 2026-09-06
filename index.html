@@ -4,7 +4,62 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>StudySmart AI</title>
-</head>
+</head><!-- AI EXAM MODE -->
+<section id="exam-mode" style="padding:20px; max-width:700px; margin:auto;">
+  <h2>📝 AI Exam Mode</h2>
+
+  <select id="examSubject" style="padding:12px; width:100%; margin:8px 0;">
+    <option>Mathematics</option>
+    <option>Biology</option>
+    <option>Chemistry</option>
+    <option>English</option>
+    <option>ICT</option>
+    <option>Civic Education</option>
+  </select>
+
+  <select id="examDifficulty" style="padding:12px; width:100%; margin:8px 0;">
+    <option>Easy</option>
+    <option>Medium</option>
+    <option>Hard</option>
+  </select>
+
+  <button onclick="startExam()" style="padding:12px 20px;">
+    Start Exam
+  </button>
+
+  <div id="examQuestion" style="margin-top:20px;"></div>
+</section>
+
+<script>
+async function startExam() {
+  const subject = document.getElementById("examSubject").value;
+  const difficulty = document.getElementById("examDifficulty").value;
+
+  document.getElementById("examQuestion").innerHTML =
+    "Generating your exam... ⏳";
+
+  try {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: `Create one ${difficulty} multiple-choice exam question for ${subject}.
+Give four options A, B, C and D, and clearly state the correct answer.`
+      })
+    });
+
+    const data = await response.json();
+
+    document.getElementById("examQuestion").innerText =
+      data.reply || data.message || "No question received.";
+  } catch (error) {
+    document.getElementById("examQuestion").innerText =
+      "Unable to generate the exam right now.";
+  }
+}
+</script>
 <body>
   <h1>StudySmart AI Tutor</h1>
   <p>Your AI study assistant is ready.</p>
